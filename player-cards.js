@@ -209,6 +209,33 @@
     update();
   }
 
+  // Moves the win-chance card ("Where is the game?" + big percentages + bar)
+  // up so it sits directly under the Team 1 / Team 2 drop-downs.
+  function moveResultCard(selects) {
+    if (selects.length !== 2 || document.querySelector("[data-pc-moved]")) return;
+    var label = Array.prototype.filter.call(document.querySelectorAll("*"), function (n) {
+      return n.children.length === 0 && /Where is the game\?/i.test(n.textContent);
+    })[0];
+    if (!label) return;
+    var card = label.parentElement;
+    while (card && card !== document.body) {
+      var leaves = card.querySelectorAll("*");
+      var hasBig = Array.prototype.some.call(leaves, function (n) {
+        return n.children.length === 0 && /^\s*\d{1,3}%\s*$/.test(n.textContent);
+      });
+      if (hasBig) break;
+      card = card.parentElement;
+    }
+    if (!card || card === document.body) return;
+    if (/Coming up/i.test(card.textContent) || card.contains(selects[0]) || card.contains(selects[1])) return;
+    var row = selects[0].parentElement;
+    while (row && row !== document.body && !row.contains(selects[1])) row = row.parentElement;
+    if (!row || row === document.body || row.contains(card)) return;
+    row.insertAdjacentElement("afterend", card);
+    card.setAttribute("data-pc-moved", "1");
+    card.style.marginTop = "16px";
+  }
+
   function autoWire() {
     var script = document.currentScript || document.querySelector('script[src*="player-cards"]');
     if (script && script.getAttribute("data-auto") === "off") return;
@@ -216,6 +243,9 @@
       var names = {};
       idx.teams.forEach(function (t) { names[t.team] = 1; });
       var panels = findPanels(), selects = findSelects(names);
+      if (!script || script.getAttribute("data-layout") !== "off") {
+        try { moveResultCard(selects); } catch (e) { if (window.console) console.warn("PlayerCards layout:", e); }
+      }
       if (panels.length === 2 && selects.length === 2) {
         bind(selects[0], panels[0], names);
         bind(selects[1], panels[1], names);
