@@ -149,5 +149,6 @@ document.getElementById("slate").innerHTML=S.map(function(g){
 var home=by[g[0]],away=by[g[1]],ph=chance(home,away,"a"),pw=100-ph;
 return'<div class="game"><div class="day">'+g[2]+'</div><div class="row"><span class="cb">'+away.n+" "+pw+'%</span><span class="ca">'+home.n+" "+ph+'%</span></div><div class="bar" aria-hidden="true"><i class="bb" style="width:'+pw+'%"></i><i class="ba" style="width:'+ph+'%"></i></div></div>'}).join("");
 </script>
+<script src="player-cards.js"></script>
 </body>
 </html>
