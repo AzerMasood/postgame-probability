@@ -71,6 +71,7 @@ main{position:relative;z-index:1;padding-left:calc(var(--yw) + 10px);padding-rig
 .yard::after{content:"";position:absolute;top:0;bottom:0;width:calc(var(--yw)*.42);background:repeating-linear-gradient(to bottom,transparent 0 18px,#fff 18px 24px)}
 .yard.l::after{left:calc(var(--yw)*.4)}.yard.r::after{right:calc(var(--yw)*.4)}
 @media (min-width:720px){:root{--yw:72px}main{padding-left:16px;padding-right:16px}}
+.pcat{margin:0 0 12px}.pmore{display:block;width:100%;margin:0 0 10px;padding:9px;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;cursor:pointer}.pmore:hover,.pmore:focus-visible{border-color:var(--a)}
 </style>
 </head>
 <body>
@@ -116,8 +117,70 @@ var O={};"Alabama:9E1B32,FFFFFF,-,D0D0D0;Texas:BF5700,-,-,FFFFFF;Michigan:00274C
 var SAMPLE=[["QB","Pass yds","TD","Rating"],["RB","Rush yds","TD","Yds/carry"],["WR","Catches","Rec yds","TD"]];
 function pcards(id,t){var tx=lum(t.p)<150?"#fff":"#111";document.getElementById(id).innerHTML='<h3>'+t.n+'</h3><p class="pv">Preview layout with sample cards. Real players and stats come next.</p>'+SAMPLE.map(function(s,i){return'<div class="pc2"><div class="ph" style="background:'+t.p+';color:'+tx+'"><b>'+(i+1)+'</b><span>Player name</span><i>'+s[0]+' · #00</i></div><div class="st"><div><em>'+s[1]+'</em>--</div><div><em>'+s[2]+'</em>--</div><div><em>'+s[3]+'</em>--</div></div><div class="so"><span>Instagram</span><span>X</span></div></div>'}).join("")}
 var REAL={"Georgia":[["Gunner Stockton","QB","14","6-1, 215 lb","Tiger, GA",[["Pass yds","2,109"],["TD","21"],["Comp %","71.4%"]]],["Dwight Phillips Jr.","RB","20","5-10, 185 lb","Mableton, GA",[["Rush yds","547"],["TD","2"],["Yds/carry","7.5"]]],["Talyn Taylor","WR","1","6-0, 190 lb","Geneva, IL",[["Catches","28"],["Rec yds","489"],["TD","6"]]]]};
-function pcards2(id,t){var R=REAL[t.n];if(!R)return pcards(id,t);var tx=lum(t.p)<150?"#fff":"#111";
-document.getElementById(id).innerHTML='<h3>'+t.n+'</h3><p class="pv">Real 2026 stats from CollegeFootballData, exported Nov 15. Top passer, rusher and receiver by yards.</p>'+R.map(function(p,i){var q=encodeURIComponent(p[0]+" "+t.n+" football");return'<div class="pc2"><div class="ph" style="background:'+t.p+';color:'+tx+'"><b>'+(i+1)+'</b><span>'+p[0]+'</span><i>'+p[1]+" \u00b7 #"+p[2]+'</i></div><div class="bio">'+p[3]+" \u00b7 "+p[4]+'</div><div class="st">'+p[5].map(function(x){return'<div><em>'+x[0]+'</em>'+x[1]+'</div>'}).join("")+'</div><div class="so"><a href="https://www.google.com/search?q='+q+'+instagram" target="_blank" rel="noopener">Instagram</a><a href="https://www.google.com/search?q='+q+'+twitter" target="_blank" rel="noopener">X</a></div></div>'}).join("")}
+/*PC-START*/
+var IDXP=null,TC={},PT={},DATA={},LIM={},CAT="top";
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function nrm(s){return String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"")}
+var AL={appalachianstate:["appstate","appalachian"],umass:["massachusetts"],uconn:["connecticut"],miamifl:["miami","miamiflorida"],miamioh:["miamiohio"],louisianamonroe:["ulmonroe"],utsa:["utsanantonio","texassanantonio"],southernmiss:["southernmississippi"],samhouston:["samhoustonstate"],floridainternational:["fiu"],pittsburgh:["pitt"],middletennessee:["middletennesseestate"],bowlinggreen:["bowlinggreenstate"],ncstate:["northcarolinastate"]};
+function loadIdx(){if(!IDXP){IDXP=fetch("data/index.json").then(function(r){if(!r.ok)throw new Error("data/index.json "+r.status);return r.json()}).then(function(j){var m={};j.teams.forEach(function(x){m[nrm(x.team)]=x});return m});IDXP.catch(function(){IDXP=null})}return IDXP}
+function findEntry(m,name){var k=nrm(name),c=[k].concat(AL[k]||[]),i;for(i=0;i<c.length;i++)if(m[c[i]])return m[c[i]];return null}
+function loadTeam(name){if(!TC[name]){TC[name]=loadIdx().then(function(m){var e=findEntry(m,name);if(!e)throw new Error("no data for "+name);return fetch("data/teams/"+e.slug+".json")}).then(function(r){if(!r.ok)throw new Error("team file "+r.status);return r.json()});TC[name].catch(function(){delete TC[name]})}return TC[name]}
+function sv(p,c,k){var v=p.stats&&p.stats[c]&&p.stats[c][k],n=Number(v);return v==null||v===""||!isFinite(n)?null:n}
+function f0(n){return n==null?"--":Math.round(n).toLocaleString("en-US")}
+function f1(n){return n==null?"--":n.toFixed(1)}
+function ht(p){return p.height?Math.floor(p.height/12)+"-"+(p.height%12):""}
+function rate(p){var a=sv(p,"passing","ATT"),c=sv(p,"passing","COMPLETIONS"),y=sv(p,"passing","YDS"),t=sv(p,"passing","TD"),i=sv(p,"passing","INT")||0;return a&&c!=null&&y!=null&&t!=null?(8.4*y+330*t+100*c-200*i)/a:null}
+var G={QB:["QB"],RB:["RB","FB","HB"],WR:["WR"],TE:["TE"],OL:["OL","OT","OG","OC","C","G","T"],DL:["DL","DE","DT","NT","EDGE"],LB:["LB","ILB","OLB","MLB"],DB:["DB","CB","S","FS","SS","NB"],ST:["K","P","PK","LS"]};
+var GO=["QB","RB","WR","TE","OL","DL","LB","DB","ST","XX"];
+var CATS=[["top","Top performers"],["QB","Quarterbacks"],["RB","Running backs"],["WR","Wide receivers"],["TE","Tight ends"],["OL","Offensive line"],["DL","Defensive line"],["LB","Linebackers"],["DB","Defensive backs"],["ST","Kickers & punters"],["all","All players"]];
+var RD={QB:"passing yards",RB:"rushing yards",WR:"receiving yards",TE:"receiving yards",DL:"total tackles",LB:"total tackles",DB:"total tackles",ST:"kicking points or punt yards",OL:"jersey number",XX:"jersey number"};
+function grp(pos){pos=String(pos||"").toUpperCase();for(var i=0;i<9;i++)if(G[GO[i]].indexOf(pos)>=0)return GO[i];return"XX"}
+var recv={s:function(p){return sv(p,"receiving","YDS")},c:function(p){return[["Catches",f0(sv(p,"receiving","REC"))],["Rec yds",f0(sv(p,"receiving","YDS"))],["TD",f0(sv(p,"receiving","TD"))]]}};
+var tkl={s:function(p){return sv(p,"defensive","TOT")},c:function(p){return[["Tackles",f0(sv(p,"defensive","TOT"))],["TFL",f0(sv(p,"defensive","TFL"))],["Sacks",f0(sv(p,"defensive","SACKS"))]]}};
+var SP={
+QB:{s:function(p){return sv(p,"passing","YDS")},c:function(p){return[["Pass yds",f0(sv(p,"passing","YDS"))],["TD",f0(sv(p,"passing","TD"))],["Rating",f1(rate(p))]]}},
+RB:{s:function(p){return sv(p,"rushing","YDS")},c:function(p){return[["Rush yds",f0(sv(p,"rushing","YDS"))],["TD",f0(sv(p,"rushing","TD"))],["Yds/carry",f1(sv(p,"rushing","YPC"))]]}},
+WR:recv,TE:recv,DL:tkl,LB:tkl,
+DB:{s:tkl.s,c:function(p){return[["Tackles",f0(sv(p,"defensive","TOT"))],["INT",f0(sv(p,"interceptions","INT"))],["PD",f0(sv(p,"defensive","PD"))]]}},
+ST:{s:function(p){var k=sv(p,"kicking","PTS");return k!=null?k:sv(p,"punting","YDS")},c:function(p){return String(p.position).toUpperCase()==="P"?[["Punts",f0(sv(p,"punting","NO"))],["Avg",f1(sv(p,"punting","AVG"))],["Long",f0(sv(p,"punting","LONG"))]]:[["FG",f0(sv(p,"kicking","FGM"))],["Long",f0(sv(p,"kicking","LONG"))],["Pts",f0(sv(p,"kicking","PTS"))]]}},
+OL:{nb:1,s:function(){return null},c:function(p){return[["Height",ht(p)||"--"],["Weight",p.weight?p.weight+" lb":"--"],["Jersey",p.jersey>0?"#"+p.jersey:"--"]]}}};
+SP.XX=SP.OL;
+function jn(p){return p.jersey>0?p.jersey:9999}
+function sortG(ps,g){var sp=SP[g];return ps.slice().sort(function(a,b){var x=sp.s(a),y=sp.s(b);if(x==null&&y==null)return jn(a)-jn(b)||String(a.name).localeCompare(String(b.name));if(x==null)return 1;if(y==null)return-1;return y-x})}
+function topBy(ps,g,ex){var b=null,bv=-Infinity;ps.forEach(function(p){if(ex&&grp(p.position)===ex)return;var v=SP[g].s(p);if(v!=null&&v>bv){b=p;bv=v}});return b}
+function itemsFor(ps){
+if(CAT==="top")return[{p:topBy(ps,"QB"),spec:SP.QB,pos:"QB"},{p:topBy(ps,"RB","QB"),spec:SP.RB,pos:"RB"},{p:topBy(ps,"WR","QB"),spec:SP.WR,pos:"WR"}];
+var gs=CAT==="all"?GO:[CAT],out=[];
+gs.forEach(function(g){sortG(ps.filter(function(p){return grp(p.position)===g}),g).forEach(function(p){out.push({p:p,spec:SP[g],pos:g})})});
+return out}
+function DEFLIM(){return CAT==="top"?3:CAT==="all"?30:15}
+function card(t,tx,it,i){
+var p=it.p,has=!!p,x=p||{stats:{}},q=has?encodeURIComponent(p.name+" "+t.n+" football"):"";
+var bio=(it.spec.nb?[x.hometown]:[ht(x),x.weight?x.weight+" lb":"",x.hometown]).filter(Boolean).map(esc).join(" · ");
+return'<div class="pc2"><div class="ph" style="background:'+t.p+';color:'+tx+'"><b>'+(i+1)+'</b><span>'+(has?esc(p.name):"No stats yet")+'</span><i>'+esc(x.position||it.pos)+(x.jersey>0?" · #"+esc(x.jersey):"")+'</i></div>'+(bio?'<div class="bio">'+bio+'</div>':"")+'<div class="st">'+it.spec.c(x).map(function(c){return'<div><em>'+c[0]+'</em>'+esc(c[1])+'</div>'}).join("")+'</div>'+(has?'<div class="so"><a href="https://www.google.com/search?q='+q+'+instagram" target="_blank" rel="noopener">Instagram</a><a href="https://www.google.com/search?q='+q+'+twitter" target="_blank" rel="noopener">X</a></div>':"")+'</div>'}
+function desc(){if(CAT==="top")return"Top passer, rusher and receiver by yards.";if(CAT==="all")return"Every player, grouped by position.";var l="";CATS.forEach(function(c){if(c[0]===CAT)l=c[1]});return l+", ranked by "+RD[CAT]+"."}
+function fill(id){
+var s=DATA[id];if(!s)return;
+var box=document.getElementById(id),t=s.t,tx=lum(t.p)<150?"#fff":"#111",items=itemsFor(s.d.players||[]),lim=LIM[id];
+box.querySelector(".pv").textContent=s.d.season+" stats from CollegeFootballData"+s.up+". "+desc();
+var h=items.slice(0,lim).map(function(it,i){return card(t,tx,it,i)}).join("");
+if(!items.length)h='<p class="pv">No players listed in this category.</p>';
+if(items.length>lim)h+='<button type="button" class="pmore">Show '+Math.min(20,items.length-lim)+' more ('+(items.length-lim)+' left)</button>';
+box.querySelector(".plist").innerHTML=h}
+function paint(id,t,d){
+var up=d.updated?", updated "+new Date(d.updated).toLocaleDateString("en-US",{month:"short",day:"numeric"}):"";
+DATA[id]={t:t,d:d,up:up};LIM[id]=DEFLIM();
+var opts=CATS.map(function(c){return'<option value="'+c[0]+'"'+(c[0]===CAT?" selected":"")+'>'+esc(c[1])+'</option>'}).join("");
+document.getElementById(id).innerHTML='<h3>'+esc(t.n)+'</h3><p class="pv"></p><select class="pcat" aria-label="Filter players by category">'+opts+'</select><div class="plist"></div>';
+fill(id)}
+function pcards2(id,t){
+PT[id]=t.n;delete DATA[id];
+document.getElementById(id).innerHTML='<h3>'+esc(t.n)+'</h3><p class="pv">Loading players…</p>';
+loadTeam(t.n).then(function(d){if(PT[id]===t.n)paint(id,t,d)}).catch(function(e){if(window.console)console.warn("player cards:",e);if(PT[id]===t.n)document.getElementById(id).innerHTML='<h3>'+esc(t.n)+'</h3><p class="pv">Player stats aren’t available for this team yet.<br>('+esc(e&&e.message||e)+')</p>'})}
+["p1","p2"].forEach(function(id){var e=document.getElementById(id);
+e.addEventListener("change",function(ev){var s=ev.target;if(s&&s.classList&&s.classList.contains("pcat")){CAT=s.value;["p1","p2"].forEach(function(k){var b=document.getElementById(k),x=b.querySelector(".pcat");if(x)x.value=CAT;LIM[k]=DEFLIM();fill(k)})}});
+e.addEventListener("click",function(ev){var b=ev.target;if(b&&b.classList&&b.classList.contains("pmore")){LIM[id]+=20;fill(id)}})});
+/*PC-END*/
 function dist(a,b){var s=0;for(var i=1;i<6;i+=2)s+=Math.abs(parseInt(a.substr(i,2),16)-parseInt(b.substr(i,2),16));return s}
 function stage(box,sel){
 var cards=T.map(function(t){var d=document.createElement("div"),o=O[t.n],sh,bd=t.p,c1=t.p,c2="#000",w1=34,w2=0,wg="none",mk;
