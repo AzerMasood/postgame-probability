@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>College football win chances</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&display=swap">
+<style>
+:root{--bg:#EEF2EE;--card:#fff;--ink:#14211B;--mute:#5B6B62;--line:#D5DDD6;--a:#1E7A46;--b:#3B4A6B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A14;--card:#16231C;--ink:#E8F0EA;--mute:#9BAAA0;--line:#2A3A30;--a:#4CC38A;--b:#8FA3D1;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0F1A14;--card:#16231C;--ink:#E8F0EA;--mute:#9BAAA0;--line:#2A3A30;--a:#4CC38A;--b:#8FA3D1;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:640px;margin:0 auto;padding:24px 16px 40px}
+h1{font:700 40px/1.05 "Barlow Condensed","Arial Narrow",sans-serif;margin:0 0 6px}
+h2{font:700 26px/1.1 "Barlow Condensed","Arial Narrow",sans-serif;margin:32px 0 4px}
+.sub{color:var(--mute);margin:0 0 16px;font-size:15px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.pick{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+label{display:block;font-size:14px;color:var(--mute)}
+select{display:block;width:100%;margin-top:4px;padding:10px;font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px}
+select:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.score{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.score div:last-child{text-align:right}
+.nm{font-size:15px;font-weight:600}
+.pc{font:700 64px/1 "Barlow Condensed","Arial Narrow",sans-serif}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--line);margin-top:10px}
+.bar i{display:block;height:100%}
+.ca{color:var(--a)}.cb{color:var(--b)}
+.ba{background:var(--a)}.bb{background:var(--b)}
+.game{padding:14px 0;border-top:1px solid var(--line)}
+.game:first-child{border-top:0;padding-top:0}
+.day{font-size:13px;color:var(--mute)}
+.row{display:flex;justify-content:space-between;gap:12px;font-weight:600;margin-top:2px}
+.row span:last-child{text-align:right}
+.note{font-size:13px;color:var(--mute);margin-top:24px}
+.plwrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.pl h3{font:700 22px/1.1 "Barlow Condensed","Arial Narrow",sans-serif;margin:0 0 2px}
+.pv{font-size:12px;color:var(--mute);margin:0 0 10px}
+.pc2{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.ph{display:flex;align-items:center;gap:8px;padding:10px 12px;flex-wrap:wrap}
+.ph b{font:700 22px/1 "Barlow Condensed","Arial Narrow",sans-serif;opacity:.85}
+.ph span{font-weight:600}
+.ph i{font-style:normal;font-size:12px;opacity:.85;margin-left:auto}
+.st{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:10px 12px;text-align:center;font:700 20px/1 "Barlow Condensed","Arial Narrow",sans-serif}
+.st em{display:block;font:400 11px/1.2 system-ui,sans-serif;color:var(--mute);margin-bottom:4px}
+.so{display:flex;gap:6px;padding:0 12px 12px}
+.so span{font-size:12px;border:1px dashed var(--line);border-radius:999px;padding:3px 10px;color:var(--mute)}
+.so a{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink);text-decoration:none}
+.so a:hover,.so a:focus-visible{border-color:var(--a)}
+.bio{padding:8px 12px 0;font-size:12px;color:var(--mute)}
+@media (min-width:1280px){.plwrap{display:contents}.pl{position:absolute;top:0;width:min(260px,calc(50vw - 348px - var(--yw)))}.pl.l{right:calc(100% + 14px)}.pl.r{left:calc(100% + 14px)}}
+.pick{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.stage{position:relative;height:290px;perspective:700px;margin-bottom:10px;overflow:hidden;border-radius:12px;touch-action:pan-y;cursor:ns-resize;--mx:0;--my:0}
+.stage:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.tcard{position:absolute;left:50%;top:50%;width:240px;height:118px;margin:-59px 0 0 -120px;border-radius:14px;overflow:hidden;background:var(--p);color:var(--t);cursor:pointer;transition:transform .35s ease,opacity .35s ease;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.tcard .bg{position:absolute;inset:-12%;background:radial-gradient(circle at 30% 25%,rgba(255,255,255,.25),transparent 55%),linear-gradient(150deg,var(--p),color-mix(in srgb,var(--p) 55%,#000));transition:transform .35s ease;transform:translate(calc(var(--mx)*-10px),calc(var(--my)*-6px + var(--o,0)*10px))}
+.tcard .hm{position:absolute;left:10px;top:15px;width:96px;height:87px;transition:transform .35s ease;transform:translate(calc(var(--mx)*12px),calc(var(--my)*7px + var(--o,0)*-8px))}
+.tn{position:absolute;left:114px;right:8px;top:0;bottom:0;display:flex;align-items:center;font:700 25px/1.05 "Barlow Condensed","Arial Narrow",sans-serif}
+@media (prefers-reduced-motion:reduce){.tcard,.tcard .bg,.tcard .hm{transition:none}}
+.tcard{perspective:600px}
+:root{--yw:26px}
+body{position:relative;min-height:100vh}
+main{position:relative;z-index:1;padding-left:calc(var(--yw) + 10px);padding-right:calc(var(--yw) + 10px)}
+.yard{position:absolute;top:0;bottom:0;width:var(--yw);overflow:hidden;background:repeating-linear-gradient(to bottom,transparent 0 114px,#fff 114px 120px),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 .18 0 0 0 0 0 1.2 0 0 0 -.25'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(ellipse at 50% 30%,#2F9A48,#145A27 70%)}
+.yard.l{left:0}
+.yard.r{right:0}
+.yard::before{content:"";position:absolute;top:0;bottom:0;width:calc(var(--yw)*.3);background:#fff}
+.yard.l::before{left:0}.yard.r::before{right:0}
+.yard::after{content:"";position:absolute;top:0;bottom:0;width:calc(var(--yw)*.42);background:repeating-linear-gradient(to bottom,transparent 0 18px,#fff 18px 24px)}
+.yard.l::after{left:calc(var(--yw)*.4)}.yard.r::after{right:calc(var(--yw)*.4)}
+@media (min-width:720px){:root{--yw:72px}main{padding-left:16px;padding-right:16px}}
+</style>
+</head>
+<body>
+<main>
+<h1>College football win chances</h1>
+<p class="sub">Scroll over a helmet to browse teams, or use the drop-downs. Then see who’s more likely to win.</p>
+<div class="card">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><path id="hp" fill-rule="evenodd" clip-rule="evenodd" d="M45 74L28 98 13 129 3 165 3 170 1 177 1 188 0 189 0 218 1 219 1 229 2 230 2 236 6 256 15 286 33 329 32 331 27 332 24 337 45 385 81 382 110 402 138 417 153 422 167 425 199 425 213 422 224 418 238 410 249 400 256 391 264 374 267 362 268 350 273 349 278 351 286 377 289 384 298 398 312 412 321 418 336 425 349 429 365 432 371 432 372 433 413 434 414 433 424 433 445 429 462 422 467 417 471 407 476 386 478 366 479 365 479 352 480 351 479 310 478 309 477 294 473 285 458 285 457 286 446 286 445 287 434 287 433 288 385 290 384 291 365 291 364 290 363 279 359 260 359 254 358 253 357 235 358 234 358 229 366 214 378 203 382 201 385 202 377 210 373 216 368 228 368 247 369 248 373 280 403 279 404 278 417 277 392 276 390 274 389 263 383 232 382 219 387 210 396 202 409 197 434 191 441 188 442 186 442 177 434 151 427 134 421 123 417 120 402 123 400 121 392 104 377 81 362 63 345 47 332 37 309 23 275 9 272 9 257 4 241 2 240 1 191 0 190 1 182 1 181 2 160 5 145 10 142 10 125 16 102 27 76 44 63 55ZM207 357L213 357 218 362 218 368 212 373 206 372 202 367 203 361ZM300 350L301 349 356 347 365 362 380 376 388 381 406 389 424 393 426 395 424 410 419 412 380 412 379 411 370 411 354 408 337 402 322 392 313 382 306 370ZM430 371L428 373 425 373 403 365 390 357 380 347 382 345 396 345 397 344 410 344 411 343 429 342 430 343ZM451 308L456 308 458 312 458 327 459 328 458 364 457 365 457 372 454 377 451 375 451 317 450 316 450 309ZM122 292L128 286 137 281 141 280 155 281 160 283 167 289 167 292 160 304 161 306 169 310 175 302 261 344 261 350 260 351 259 365 256 374 249 387 241 396 233 402 225 406 213 410 209 410 208 409 213 407 229 396 237 387 243 378 246 371 249 359 249 351 247 351 179 318 177 318 172 329 161 339 152 342 141 342 135 340 130 337 121 328 117 320 116 305ZM201 268L212 248 215 246 255 309 260 314 268 317 350 314 351 313 368 313 369 312 386 312 387 311 404 311 405 310 425 310 426 309 429 311 429 320 428 321 409 322 408 323 359 325 358 326 339 326 338 327 285 328 284 329 265 328 257 325 249 319 231 289 206 273ZM173 211L180 210 187 213 202 226 189 249 176 240 165 229 164 226 165 225 164 224 165 220 168 215ZM418 187L416 189 402 195 358 195 357 196 333 197 332 198 325 198 324 199 317 199 316 200 292 203 278 206 268 210 265 213 262 219 262 230 269 256 271 259 271 262 282 294 281 296 273 296 271 294 243 250 250 233 250 217 254 207 261 200 272 195 301 189 333 186 334 185 345 185 346 184 401 184 402 185 412 185ZM354 123L361 121 362 122 380 122 381 123 379 127 379 131 390 161 389 163 362 163 361 162 351 132 351 127Z"/><clipPath id="hc"><use href="#hp" clip-rule="evenodd"/></clipPath><clipPath id="hk"><rect x="270" y="290" width="212" height="145"/></clipPath></defs><symbol id="hm" viewBox="0 0 481 435"><path d="M45 74L28 98 13 129 3 165 3 170 1 177 1 188 0 189 0 218 1 219 1 229 2 230 2 236 6 256 15 286 33 329 32 331 27 332 24 337 45 385 81 382 110 402 138 417 153 422 167 425 199 425 213 422 224 418 238 410 249 400 256 391 264 374 267 362 268 350 273 349 278 351 286 377 289 384 298 398 312 412 321 418 336 425 349 429 365 432 371 432 372 433 413 434 414 433 424 433 445 429 462 422 467 417 471 407 476 386 478 366 479 365 479 352 480 351 479 310 478 309 477 294 473 285 458 285 457 286 446 286 445 287 434 287 433 288 385 290 384 291 365 291 364 290 363 279 359 260 359 254 358 253 357 235 358 234 358 229 366 214 378 203 382 201 385 202 377 210 373 216 368 228 368 247 369 248 373 280 403 279 404 278 417 277 392 276 390 274 389 263 383 232 382 219 387 210 396 202 409 197 434 191 441 188 442 186 442 177 434 151 427 134 421 123 417 120 402 123 400 121 392 104 377 81 362 63 345 47 332 37 309 23 275 9 272 9 257 4 241 2 240 1 191 0 190 1 182 1 181 2 160 5 145 10 142 10 125 16 102 27 76 44 63 55ZM300 350L301 349 356 347 365 362 380 376 388 381 406 389 424 393 426 395 424 410 419 412 380 412 379 411 370 411 354 408 337 402 322 392 313 382 306 370ZM430 371L428 373 425 373 403 365 390 357 380 347 382 345 396 345 397 344 410 344 411 343 429 342 430 343ZM451 308L456 308 458 312 458 327 459 328 458 364 457 365 457 372 454 377 451 375 451 317 450 316 450 309Z" style="fill:var(--in);fill-rule:evenodd"/><use href="#hp" style="fill:var(--sh)"/><use href="#hp" clip-path="url(#hk)" style="fill:var(--mk)"/><path d="M368 196L343 196 342 197 333 197 332 198 303 201 278 206 268 210 265 213 263 217 263 235 281 292 379 292 379 291 365 291 364 290 363 279 359 260 359 254 358 253 358 245 357 244 358 229 362 222 362 220 368 212Z" style="fill:var(--in)"/><g clip-path="url(#hc)" style="fill:var(--wg)"><path d="M330 98L25 108 25 126Z"/><path d="M330 98L25 140 25 158Z"/><path d="M330 98L25 172 25 190Z"/></g><path d="M15 135A191 191 0 0 1 340 77" clip-path="url(#hc)" style="fill:none;stroke:var(--c2);stroke-width:var(--w2)"/><path d="M63 152A139 139 0 0 1 300 111" clip-path="url(#hc)" style="fill:none;stroke:var(--c2);stroke-width:var(--w2)"/><path d="M39 144A165 165 0 0 1 320 94" clip-path="url(#hc)" style="fill:none;stroke:var(--c1);stroke-width:var(--w1)"/></symbol></svg>
+<div class="pick">
+<div><div class="stage" id="sa" tabindex="0" aria-label="Browse teams for Team 1"></div><label>Team 1<select id="a"></select></label></div>
+<div><div class="stage" id="sb" tabindex="0" aria-label="Browse teams for Team 2"></div><label>Team 2<select id="b"></select></label></div>
+</div>
+<label style="margin-top:12px">Where is the game?<select id="h"><option value="n">Neutral field</option><option value="a">Team 1 is at home</option><option value="b">Team 2 is at home</option></select></label>
+<div class="score" aria-live="polite">
+<div><div class="nm" id="na"></div><div class="pc ca" id="pa"></div></div>
+<div><div class="nm" id="nb"></div><div class="pc cb" id="pb"></div></div>
+</div>
+<div class="bar" aria-hidden="true"><i class="ba" id="ba"></i><i class="bb" id="bb"></i></div>
+</div>
+<div class="plwrap"><div class="pl l" id="p1"></div><div class="pl r" id="p2"></div></div>
+<h2>Coming up</h2>
+<p class="sub">The home team gets a small boost. Days are US time.</p>
+<div class="card" id="slate"></div>
+<p class="note">This first version rates teams by win-loss record only, so it doesn’t know who they played. Treat the percentages as rough estimates, just for fun. Helmet colors and stripes are matched from memory for about 20 teams and are generic for the rest. Team logos are not included. Records as of Nov 15, 2026.</p>
+</main>
+<script>
+var D="Utah 9-0;Texas Tech 8-1;BYU 8-2;Arizona 7-2;Houston 7-3;Oklahoma State 6-3;Arizona State 6-4;Baylor 6-4;Cincinnati 5-5;UCF 5-5;West Virginia 5-5;TCU 5-5;Iowa State 5-5;Kansas State 4-6;Colorado 4-6;Kansas 4-6;New Mexico 8-1;Air Force 8-2;North Dakota State 7-2;Wyoming 6-3;UNLV 5-4;San Jose State 5-6;Nevada 4-6;Hawai’i 3-6;UTEP 1-8;Northern Illinois 0-10;Miami (FL) 9-1;Wake Forest 9-1;Louisville 7-3;SMU 7-3;Duke 7-3;Virginia Tech 6-3;Clemson 6-4;Pittsburgh 6-4;Florida State 5-5;Syracuse 5-5;North Carolina 5-5;Virginia 5-5;Stanford 4-5;NC State 4-6;Boston College 4-6;Georgia Tech 3-7;California 3-7;Toledo 8-2;Buffalo 7-3;Ohio 7-3;Western Michigan 7-3;Miami (OH) 6-4;Central Michigan 5-5;UMass 5-5;Eastern Michigan 4-6;Bowling Green 3-7;Ball State 3-7;Kent State 3-7;Sacramento State 2-9;Akron 1-9;Boise State 9-1;Texas State 6-4;Fresno State 5-5;Oregon State 5-5;San Diego State 4-5;Utah State 4-5;Colorado State 3-6;Washington State 1-8;Georgia 9-1;Alabama 8-2;Tennessee 8-2;Texas 7-2;Kentucky 7-3;South Carolina 6-3;Ole Miss 6-3;LSU 6-3;Missouri 6-4;Florida 6-4;Auburn 6-4;Oklahoma 5-4;Mississippi State 4-6;Vanderbilt 4-6;Texas A&amp;M 4-6;Arkansas 3-6;Notre Dame 9-1;UConn 5-5;UCLA 10-0;Indiana 9-1;Iowa 8-2;Oregon 7-3;USC 7-3;Ohio State 7-3;Illinois 6-4;Washington 6-4;Wisconsin 6-4;Northwestern 6-4;Nebraska 6-4;Penn State 6-4;Minnesota 5-5;Michigan 5-5;Maryland 4-6;Michigan State 3-7;Purdue 3-7;Rutgers 2-8;Louisiana Tech 8-2;James Madison 8-3;Louisiana 7-3;Georgia Southern 6-4;Appalachian State 6-4;Georgia State 5-5;Marshall 5-5;South Alabama 5-5;Coastal Carolina 4-6;Troy 4-6;Arkansas State 4-6;Southern Miss 3-7;Old Dominion 3-7;Louisiana-Monroe 2-8;Memphis 8-2;North Texas 7-2;UTSA 7-2;Florida Atlantic 6-3;UAB 6-4;East Carolina 6-4;South Florida 6-4;Tulsa 5-4;Army 5-4;Tulane 5-5;Navy 3-6;Temple 2-8;Charlotte 1-9;Rice 1-9;Liberty 9-1;Jacksonville State 7-3;Middle Tennessee 5-5;Delaware 5-5;Kennesaw State 4-6;Florida International 4-6;Missouri State 4-6;Western Kentucky 4-6;New Mexico State 3-7;Sam Houston 1-9".replace(/&amp;/g,"&");
+var S=[["Oklahoma","Ole Miss","Sun Nov 15"],["Western Michigan","Eastern Michigan","Tue Nov 17"],["Kent State","Miami (OH)","Tue Nov 17"],["Ohio","Ball State","Tue Nov 17"],["UMass","Akron","Wed Nov 18"],["Buffalo","Central Michigan","Wed Nov 18"],["Temple","Rice","Thu Nov 19"],["UCF","Iowa State","Fri Nov 20"],["Duke","Clemson","Fri Nov 20"],["Toledo","Bowling Green","Fri Nov 20"],["Air Force","UTEP","Fri Nov 20"],["Michigan State","Oregon","Fri Nov 20"],["Wyoming","New Mexico","Fri Nov 20"]];
+var HOME=50,by={},C="BE0000,000000;CC0000,000000;002E5D,FFFFFF;CC0033,003366;C8102E,FFFFFF;FF6600,000000;8C1D40,FFC627;154734,FECB00;E00122,000000;FFC904,000000;002855,EAAA00;4D1979,FFFFFF;C8102E,F1BE48;512888,FFFFFF;000000,CFB87C;0051BA,E8000D;BA0C2F,63666A;003087,8A8D8F;0A5640,FFC72C;492F24,FFC425;CF0A2C,666666;0055A2,E5A823;003366,A2AAAD;024731,FFFFFF;FF8200,041E42;BA0C2F,000000;F47321,005030;9E7E38,000000;AD0000,000000;C8102E,0033A0;003087,FFFFFF;630031,CF4420;F56600,522D80;003594,FFB81C;782F40,CEB888;D44500,0C2340;7BAFD4,13294B;232D4B,F84C1E;8C1515,FFFFFF;CC0000,000000;98002E,BC9B6A;B3A369,003057;003262,FDB515;15397F,FFD204;005BBB,FFFFFF;00694E,FFFFFF;6C4023,B5A167;C41230,000000;6A0032,FFC82E;881C1C,000000;006633,FFFFFF;FE5000,4F2C1D;BA0C2F,FFFFFF;002664,EAAB00;043927,C4B581;041E42,A89968;0033A0,D64309;501214,8D734A;DB0032,002E6D;DC4405,000000;A6192E,000000;0F2439,A5ACAF;1E4D2B,C8C372;981E32,5E6A71;BA0C2F,000000;9E1B32,FFFFFF;FF8200,FFFFFF;BF5700,FFFFFF;0033A0,FFFFFF;73000A,000000;CE1126,14213D;461D7C,FDD023;F1B82D,000000;0021A5,FA4616;0C2340,E87722;841617,FDF9D8;5D1725,FFFFFF;000000,866D4B;500000,FFFFFF;9D2235,FFFFFF;0C2340,C99700;000E2F,FFFFFF;2D68C4,F2A900;990000,FFFFFF;FFCD00,000000;154733,FEE123;990000,FFC72C;BB0000,666666;E84A27,13294B;4B2E83,B7A57A;C5050C,FFFFFF;4E2A84,FFFFFF;E41C38,FFFFFF;041E42,FFFFFF;7A0019,FFCC33;00274C,FFCB05;E03A3E,FFD520;18453B,FFFFFF;CEB888,000000;CC0033,5F6A72;002F8B,E31B23;450084,CBB677;CE181E,FFFFFF;011E41,87714A;222222,FFCC00;0039A6,FFFFFF;00B140,FFFFFF;00205B,BF0D3E;006F71,A27752;8A2432,B1B3B3;CC092F,000000;FFAB00,000000;003057,7C878E;840029,FDB913;003087,898D8D;00853E,FFFFFF;0C2340,F15A22;003366,CC0000;1E6B52,F2A900;592A8A,FDC82F;006747,CFC493;002D72,C8102E;D4BF91,000000;006747,418FDE;00205B,C5B783;9D2235,FFFFFF;005035,B9975B;00205B,5E6062;002D62,C8102E;CC0000,FFFFFF;0066CC,FFFFFF;00539F,FFD200;FDBB30,000000;081E3F,B6862C;5E0009,FFFFFF;C60C30,FFFFFF;8C0B42,FFFFFF;F96302,FFFFFF".split(";");
+var T=D.split(";").map(function(s,i){var c=C[i].split(",");var m=s.match(/^(.*) (\d+)-(\d+)$/),w=+m[2],l=+m[3],p=(w+1)/(w+l+2);var t={n:m[1],w:w,l:l,p:"#"+c[0],s:"#"+c[1],r:200*Math.log10(p/(1-p))};by[t.n]=t;return t}).sort(function(x,y){return x.n.localeCompare(y.n)});
+function chance(a,b,h){var d=a.r-b.r+(h==="a"?HOME:h==="b"?-HOME:0);var p=Math.round(100/(1+Math.pow(10,-d/400)));return Math.min(99,Math.max(1,p))}
+var A=document.getElementById("a"),B=document.getElementById("b"),H=document.getElementById("h");
+function opts(sel,pick){sel.innerHTML=T.map(function(t){return'<option value="'+t.n+'"'+(t.n===pick?" selected":"")+'>'+t.n+" ("+t.w+"-"+t.l+")</option>"}).join("")}
+opts(A,"Georgia");opts(B,"Alabama");
+function show(){
+var a=by[A.value],b=by[B.value],pa=chance(a,b,H.value),pb=100-pa;
+document.getElementById("na").textContent=a.n;document.getElementById("nb").textContent=b.n;
+document.getElementById("pa").textContent=pa+"%";document.getElementById("pb").textContent=pb+"%";
+document.getElementById("ba").style.width=pa+"%";document.getElementById("bb").style.width=pb+"%";pcards2("p1",a);pcards2("p2",b)}
+[A,B,H].forEach(function(e){e.addEventListener("change",show)});
+function lum(h){return .299*parseInt(h.substr(1,2),16)+.587*parseInt(h.substr(3,2),16)+.114*parseInt(h.substr(5,2),16)}
+var O={};"Alabama:9E1B32,FFFFFF,-,D0D0D0;Texas:BF5700,-,-,FFFFFF;Michigan:00274C,-,-,FFCB05,FFCB05;Ohio State:BBBDBF,000000,BB0000,9A9A9A;Penn State:FFFFFF,041E42,-,FFFFFF;Notre Dame:C99700,-,-,=;LSU:FDD023,461D7C,FFFFFF,461D7C;BYU:002E5D,FFFFFF,-,FFFFFF;Wisconsin:C5050C,FFFFFF,-,FFFFFF;Nebraska:E41C38,-,-,FFFFFF;Oklahoma:841617,-,-,=;Navy:00205B,C5B783,-,=;Texas Tech:000000,CC0000,-,=;UCLA:2D68C4,FFD100,FFD100,=;Auburn:0C2340,E87722,-,=;Clemson:F56600,522D80,FFFFFF,522D80;Kentucky:0033A0,FFFFFF,-,FFFFFF;Boise State:0033A0,D64309,-,=;USC:990000,FFC72C,-,=;Tennessee:FF8200,FFFFFF,-,FFFFFF;Georgia:BA0C2F,000000,-,=;Florida State:782F40,CEB888,-,=".split(";").forEach(function(s){var a=s.split(":");O[a[0]]=a[1].split(",")});
+var SAMPLE=[["QB","Pass yds","TD","Rating"],["RB","Rush yds","TD","Yds/carry"],["WR","Catches","Rec yds","TD"]];
+function pcards(id,t){var tx=lum(t.p)<150?"#fff":"#111";document.getElementById(id).innerHTML='<h3>'+t.n+'</h3><p class="pv">Preview layout with sample cards. Real players and stats come next.</p>'+SAMPLE.map(function(s,i){return'<div class="pc2"><div class="ph" style="background:'+t.p+';color:'+tx+'"><b>'+(i+1)+'</b><span>Player name</span><i>'+s[0]+' · #00</i></div><div class="st"><div><em>'+s[1]+'</em>--</div><div><em>'+s[2]+'</em>--</div><div><em>'+s[3]+'</em>--</div></div><div class="so"><span>Instagram</span><span>X</span></div></div>'}).join("")}
+var REAL={"Georgia":[["Gunner Stockton","QB","14","6-1, 215 lb","Tiger, GA",[["Pass yds","2,109"],["TD","21"],["Comp %","71.4%"]]],["Dwight Phillips Jr.","RB","20","5-10, 185 lb","Mableton, GA",[["Rush yds","547"],["TD","2"],["Yds/carry","7.5"]]],["Talyn Taylor","WR","1","6-0, 190 lb","Geneva, IL",[["Catches","28"],["Rec yds","489"],["TD","6"]]]]};
+function pcards2(id,t){var R=REAL[t.n];if(!R)return pcards(id,t);var tx=lum(t.p)<150?"#fff":"#111";
+document.getElementById(id).innerHTML='<h3>'+t.n+'</h3><p class="pv">Real 2026 stats from CollegeFootballData, exported Nov 15. Top passer, rusher and receiver by yards.</p>'+R.map(function(p,i){var q=encodeURIComponent(p[0]+" "+t.n+" football");return'<div class="pc2"><div class="ph" style="background:'+t.p+';color:'+tx+'"><b>'+(i+1)+'</b><span>'+p[0]+'</span><i>'+p[1]+" \u00b7 #"+p[2]+'</i></div><div class="bio">'+p[3]+" \u00b7 "+p[4]+'</div><div class="st">'+p[5].map(function(x){return'<div><em>'+x[0]+'</em>'+x[1]+'</div>'}).join("")+'</div><div class="so"><a href="https://www.google.com/search?q='+q+'+instagram" target="_blank" rel="noopener">Instagram</a><a href="https://www.google.com/search?q='+q+'+twitter" target="_blank" rel="noopener">X</a></div></div>'}).join("")}
+function dist(a,b){var s=0;for(var i=1;i<6;i+=2)s+=Math.abs(parseInt(a.substr(i,2),16)-parseInt(b.substr(i,2),16));return s}
+function stage(box,sel){
+var cards=T.map(function(t){var d=document.createElement("div"),o=O[t.n],sh,bd=t.p,c1=t.p,c2="#000",w1=34,w2=0,wg="none",mk;
+if(o){sh="#"+o[0];c1=o[1]==="-"?"#000":"#"+o[1];w1=o[1]==="-"?0:34;c2=o[2]==="-"?"#000":"#"+o[2];w2=o[2]==="-"?0:9;mk=o[3]==="="?sh:"#"+o[3];if(o[4])wg="#"+o[4];if(dist(sh,bd)<90)bd=dist(sh,t.s)<90?(lum(sh)<140?"#E4E4E4":"#222222"):t.s}
+else{sh=Math.abs(lum(t.p)-lum(t.s))<70?(lum(t.p)<150?"#fff":"#1b1b1b"):t.s;mk=sh}
+var dark=lum(bd)<150,inn=lum(sh)<45?"#fff":"#000";
+d.className="tcard";d.setAttribute("style","--p:"+bd+";--sh:"+sh+";--c1:"+c1+";--w1:"+w1+";--c2:"+c2+";--w2:"+w2+";--mk:"+mk+";--wg:"+wg+";--in:"+inn+";--t:"+(dark?"#fff":"#111"));
+d.innerHTML='<div class="bg"></div><svg class="hm" viewBox="0 0 481 435" aria-hidden="true"><use href="#hm"/></svg><span class="tn">'+t.n+"</span>";
+box.appendChild(d);return d});
+var idx=0,acc=0,last=0,x0=null;
+function lay(){cards.forEach(function(c,i){var o=i-idx,a=Math.abs(o);c.style.transform="translateY("+o*78+"px) rotateX("+(-o*32)+"deg) scale("+(1-.1*a)+")";c.style.opacity=a>2?0:1-.28*a;c.style.zIndex=9-a;c.style.pointerEvents=a>2?"none":"auto";c.style.setProperty("--o",Math.max(-3,Math.min(3,o)))})}
+function set(i,fire){idx=Math.max(0,Math.min(T.length-1,i));sel.selectedIndex=idx;lay();if(fire)show()}
+box.addEventListener("wheel",function(e){e.preventDefault();var n=Date.now();if(n-last<70)return;acc+=e.deltaMode===1?e.deltaY*30:e.deltaY;if(Math.abs(acc)>=40){set(idx+(acc>0?1:-1),1);acc=0;last=n}},{passive:false});
+box.addEventListener("mousemove",function(e){var r=box.getBoundingClientRect();box.style.setProperty("--mx",((e.clientX-r.left)/r.width*2-1).toFixed(2));box.style.setProperty("--my",((e.clientY-r.top)/r.height*2-1).toFixed(2))});
+var px=null,sw=0,spin=null;
+box.addEventListener("mousemove",function(e){if(px!==null){var dx=e.clientX-px;if(dx*sw<0)sw=0;sw+=dx;if(Math.abs(sw)>80&&(!spin||spin.playState!=="running")&&!matchMedia("(prefers-reduced-motion:reduce)").matches){var h=cards[idx].querySelector(".hm");if(h&&h.animate){spin=h.animate({rotate:["y 0deg","y "+(sw>0?1440:-1440)+"deg"]},{duration:1700,easing:"cubic-bezier(.12,.6,.2,1)"});h.animate({scale:[1,1.12,1]},{duration:1700,easing:"ease-in-out"})}sw=0}}px=e.clientX});
+box.addEventListener("mouseleave",function(){px=null;sw=0});
+box.addEventListener("mouseleave",function(){box.style.setProperty("--mx",0);box.style.setProperty("--my",0)});
+box.addEventListener("keydown",function(e){var k=e.key;if(k==="ArrowRight"||k==="ArrowDown"){e.preventDefault();set(idx+1,1)}else if(k==="ArrowLeft"||k==="ArrowUp"){e.preventDefault();set(idx-1,1)}});
+box.addEventListener("touchstart",function(e){x0=e.touches[0].clientX},{passive:true});
+box.addEventListener("touchend",function(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>30)set(idx+(dx<0?1:-1),1)},{passive:true});
+cards.forEach(function(c,i){c.addEventListener("click",function(){set(i,1)})});
+sel.addEventListener("change",function(){set(sel.selectedIndex,0)});
+set(sel.selectedIndex,0)}
+stage(document.getElementById("sa"),A);stage(document.getElementById("sb"),B);
+["l","r"].forEach(function(s){var e=document.createElement("div");e.className="yard "+s;e.setAttribute("aria-hidden","true");document.body.appendChild(e)});
+show();
+document.getElementById("slate").innerHTML=S.map(function(g){
+var home=by[g[0]],away=by[g[1]],ph=chance(home,away,"a"),pw=100-ph;
+return'<div class="game"><div class="day">'+g[2]+'</div><div class="row"><span class="cb">'+away.n+" "+pw+'%</span><span class="ca">'+home.n+" "+ph+'%</span></div><div class="bar" aria-hidden="true"><i class="bb" style="width:'+pw+'%"></i><i class="ba" style="width:'+ph+'%"></i></div></div>'}).join("");
+</script>
+</body>
+</html>
