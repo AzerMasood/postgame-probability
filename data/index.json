@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-21T17:00:15+00:00",
+ "updated": "2026-11-22T17:28:01+00:00",
  "season": 2026,
  "teams": [
   {
@@ -10,7 +10,7 @@
    "conference": "Mountain West",
    "color": "#003594",
    "alternateColor": "#ffffff",
-   "players": 126
+   "players": 128
   },
   {
    "team": "Akron",
